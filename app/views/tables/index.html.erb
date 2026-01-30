@@ -1,14 +1,12 @@
 <h1>Available Time Slots</h1>
 
-
-
 <!-- Date Picker Section -->
 <div style="margin-bottom: 20px; padding: 15px; background-color: #C0C0C0; border: 2px solid black; font-family: 'Times New Roman', serif;">
   <h3 style="margin-top: 0; color: black; border-bottom: 2px solid gray; padding-bottom: 5px;">Select a Date</h3>
   
   <form action="/tables" accept-charset="UTF-8" method="get">
     <div style="display: flex; align-items: center; gap: 10px;">
-      <input type="date" name="date" value="<%= params[:date] || Date.current %>" min="<%= Date.current %>" 
+      <input type="date" name="date" value="<%= @selected_date %>" min="<%= @today_date %>" 
              style="padding: 6px; font-size: 16px; border: 2px inset #ffffff; border-radius: 0; background: white; font-family: 'Times New Roman', serif;">
       
       <input type="submit" value="Check Availability" class="btn btn-success">
@@ -17,46 +15,36 @@
   </form>
 
   <p style="margin-top: 10px; color: black; font-size: 16px;">
-    Showing time slots for: <strong><%= Date.parse(params[:date] || Date.current.to_s).strftime("%B %d, %Y") %></strong>
+    Showing time slots for: <strong><%= @selected_date.strftime("%B %d, %Y") %></strong>
     <span style="color: #333;">(Asia/Manila timezone)</span>
   </p>
 </div>
 
-<!-- Time Slots Table -->
 <% if @tables.any? %>
-  <table border="1" cellpadding="8" cellspacing="0" style="border-collapse: collapse; width: 100%; max-width: 600px;">
-    <thead style="background-color: #333; color: white;">
-      <tr>
-        <th style="padding: 12px;">Time</th>
-        <th style="padding: 12px;">Available Seats</th>
-        <th style="padding: 12px;">Action</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @tables.each do |table| %>
-        <% is_full = table.remaining_seats == 0 %>
-        <tr style="<%= is_full ? 'background-color: #FFCCCC;' : 'background-color: #FFFFFF;' %>">
-          <td style="padding: 12px; text-align: center; font-weight: bold;">
-            <%= table.start_time.in_time_zone("Asia/Manila").strftime("%H:%M") %>
-          </td>
-          <td style="padding: 12px; text-align: center;">
-            <span style="<%= is_full ? 'color: #CC0000;' : 'color: #006600;' %> font-weight: bold;">
-              <%= table.remaining_seats %>
-            </span>
-          </td>
-          <td style="padding: 12px; text-align: center;">
-            <% if table.remaining_seats > 0 %>
-              <%= link_to "Book Now", new_reservation_path(table_id: table.id), class: "btn btn-primary" %>
-            <% else %>
-              <span style="color: #999;">Full</span>
-            <% end %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+  <%
+    # Group tables by meal period
+    breakfast = @tables.select { |t| [7, 8, 9, 10].include?(t.start_time.in_time_zone("Asia/Manila").hour) }
+    lunch = @tables.select { |t| [11, 12, 13, 14].include?(t.start_time.in_time_zone("Asia/Manila").hour) }
+    dinner = @tables.select { |t| [18, 19, 20, 21].include?(t.start_time.in_time_zone("Asia/Manila").hour) }
+  %>
+
+  <% if breakfast.any? %>
+    <h2 style="margin-top: 20px; border-bottom: 2px solid #000080;">Breakfast (07:00 - 10:00)</h2>
+    <%= render partial: "time_slots_table", locals: { tables: breakfast } %>
+  <% end %>
+
+  <% if lunch.any? %>
+    <h2 style="margin-top: 20px; border-bottom: 2px solid #000080;">Lunch (11:00 - 14:00)</h2>
+    <%= render partial: "time_slots_table", locals: { tables: lunch } %>
+  <% end %>
+
+  <% if dinner.any? %>
+    <h2 style="margin-top: 20px; border-bottom: 2px solid #000080;">Dinner (18:00 - 21:00)</h2>
+    <%= render partial: "time_slots_table", locals: { tables: dinner } %>
+  <% end %>
+
 <% else %>
-  <div style="padding: 20px; background-color: #FFF3CD; border: 1px solid #FFEEBA; border-radius: 4px; max-width: 600px;">
-    <p style="margin: 0; color: #856404;">No time slots available for <strong><%= @selected_date.strftime("%B %d, %Y") %></strong>. Please select another date.</p>
+  <div style="padding: 20px; background-color: #FFF3CD; border: 2px solid #000000; max-width: 600px;">
+    <p style="margin: 0; color: black;">No time slots available for <strong><%= @selected_date.strftime("%B %d, %Y") %></strong>. Please select another date.</p>
   </div>
 <% end %>
