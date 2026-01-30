@@ -8,13 +8,13 @@ class TablesController < ApplicationController
       return
     end
 
-    # Get selected date or default to today
     @today_date = Date.current
     @selected_date = params[:date].present? ? Date.parse(params[:date]) : @today_date
 
-    # Get ALL tables for the selected date - simple date comparison
-    @tables = Table.where(
-      "DATE(start_time) = ?", @selected_date.to_s
-    ).order(:start_time)
+    # Use timezone-aware range query
+    day_start = @selected_date.beginning_of_day
+    day_end = @selected_date.end_of_day
+
+    @tables = Table.where(start_time: day_start..day_end).order(:start_time)
   end
 end

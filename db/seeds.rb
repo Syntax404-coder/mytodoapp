@@ -12,19 +12,19 @@ end
 Table.destroy_all if Rails.env.development? || Rails.env.test?
 
 # Simple hours array (Manila Time, 24-hour format)
-BREAKFAST_HOURS = [7, 8, 9, 10]
-LUNCH_HOURS = [11, 12, 13, 14]
-DINNER_HOURS = [18, 19, 20, 21]
+BREAKFAST_HOURS = [ 7, 8, 9, 10 ]
+LUNCH_HOURS = [ 11, 12, 13, 14 ]
+DINNER_HOURS = [ 18, 19, 20, 21 ]
 ALL_HOURS = BREAKFAST_HOURS + LUNCH_HOURS + DINNER_HOURS
 
 # Create slots for next 8 days
 8.times do |day_offset|
   date = Date.current + day_offset.days
-  
+
   ALL_HOURS.each do |hour|
     # Store as simple datetime - no timezone conversion needed
     slot_time = Time.zone.local(date.year, date.month, date.day, hour, 0, 0)
-    
+
     Table.create!(
       start_time: slot_time,
       capacity: 10,

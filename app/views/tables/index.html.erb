@@ -14,20 +14,22 @@
   </form>
 
   <p style="margin-top: 10px;">
-    Showing: <strong><%= @selected_date.strftime("%B %d, %Y") %></strong> (Manila Time)
+    Showing: <strong><%= @selected_date.strftime("%B %d, %Y") %></strong>
   </p>
 </div>
 
+<p><strong>Debug: Found <%= @tables.count %> slots</strong></p>
+
 <% if @tables.any? %>
   <%
-    # Group by meal period based on hour
-    breakfast = @tables.select { |t| t.start_time.hour >= 7 && t.start_time.hour <= 10 }
-    lunch = @tables.select { |t| t.start_time.hour >= 11 && t.start_time.hour <= 14 }
-    dinner = @tables.select { |t| t.start_time.hour >= 18 && t.start_time.hour <= 21 }
+    # Group by hour (using local time)
+    breakfast = @tables.select { |t| (7..10).include?(t.start_time.hour) }
+    lunch = @tables.select { |t| (11..14).include?(t.start_time.hour) }
+    dinner = @tables.select { |t| (18..21).include?(t.start_time.hour) }
   %>
 
   <% if breakfast.any? %>
-    <h2 style="border-bottom: 2px solid #000080;">Breakfast (07:00 - 10:00)</h2>
+    <h2 style="border-bottom: 2px solid #000080;">Breakfast (07:00 - 10:00) - <%= breakfast.count %> slots</h2>
     <table style="width: 100%; max-width: 600px; margin-bottom: 20px;">
       <thead><tr><th>Time</th><th>Available Seats</th><th>Action</th></tr></thead>
       <tbody>
@@ -49,7 +51,7 @@
   <% end %>
 
   <% if lunch.any? %>
-    <h2 style="border-bottom: 2px solid #000080;">Lunch (11:00 - 14:00)</h2>
+    <h2 style="border-bottom: 2px solid #000080;">Lunch (11:00 - 14:00) - <%= lunch.count %> slots</h2>
     <table style="width: 100%; max-width: 600px; margin-bottom: 20px;">
       <thead><tr><th>Time</th><th>Available Seats</th><th>Action</th></tr></thead>
       <tbody>
@@ -71,7 +73,7 @@
   <% end %>
 
   <% if dinner.any? %>
-    <h2 style="border-bottom: 2px solid #000080;">Dinner (18:00 - 21:00)</h2>
+    <h2 style="border-bottom: 2px solid #000080;">Dinner (18:00 - 21:00) - <%= dinner.count %> slots</h2>
     <table style="width: 100%; max-width: 600px; margin-bottom: 20px;">
       <thead><tr><th>Time</th><th>Available Seats</th><th>Action</th></tr></thead>
       <tbody>

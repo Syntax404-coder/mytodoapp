@@ -5,7 +5,7 @@ class UiConsistencyTest < ApplicationSystemTestCase
     visit login_path
 
     assert_selector "input[type='submit'][value='Login']"
-    assert_link "Sign Up"
+    assert_selector "a", text: "Sign Up"
   end
 
   test "customer navigation shows correct links after login" do
@@ -20,17 +20,17 @@ class UiConsistencyTest < ApplicationSystemTestCase
     visit login_path
     fill_in "email", with: "uitest@example.com"
     fill_in "password", with: "password123"
-    click_on "Login"
+    click_button "Login"
 
     assert_text "Logged in"
 
     # Verify customer navigation elements
-    assert_link "Time Slots"
-    assert_link "My Reservations"
+    assert_selector "a", text: "Time Slots"
+    assert_selector "a", text: "My Reservations"
     assert_selector "input[value='Check Availability']"
 
     # Click Check Availability and verify page loads
-    click_on "Check Availability"
+    click_button "Check Availability"
     assert_text "Available Time Slots"
   end
 end
