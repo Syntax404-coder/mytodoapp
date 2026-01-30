@@ -1,51 +1,36 @@
-# Seed script for Kaon Ta! reservation system
+# Kaon Ta! Seed Data
+# Simple schedule: Breakfast, Lunch, Dinner slots
 
-# Create default users if none exist
+# Create users if none exist
 if User.count == 0
-  User.create!(
-    name: "Admin User",
-    email: "admin@kaonta.com",
-    password: "password123",
-    role: :admin
-  )
-
-  User.create!(
-    name: "Test Customer",
-    email: "customer@example.com",
-    password: "password123",
-    role: :customer
-  )
-
-  puts "Seeded: Default users created"
+  User.create!(name: "Admin User", email: "admin@kaonta.com", password: "password123", role: :admin)
+  User.create!(name: "Test Customer", email: "customer@kaonta.com", password: "password123", role: :customer)
+  puts "Created default users"
 end
 
-# Wipe all existing slots (only in development/test)
-if Rails.env.development? || Rails.env.test?
-  Table.destroy_all
-else
-  puts "Skipping Table.destroy_all in production - run manually if needed"
-end
+# Clear all tables
+Table.destroy_all if Rails.env.development? || Rails.env.test?
 
-# Operating Hours (Manila Time)
-# Breakfast: 7, 8, 9, 10
-# Lunch: 11, 12, 13, 14 (2 PM)
-# Dinner: 18 (6 PM), 19, 20, 21 (9 PM)
-OPEN_HOURS = [7, 8, 9, 10, 11, 12, 13, 14, 18, 19, 20, 21]
+# Simple hours array (Manila Time, 24-hour format)
+BREAKFAST_HOURS = [7, 8, 9, 10]
+LUNCH_HOURS = [11, 12, 13, 14]
+DINNER_HOURS = [18, 19, 20, 21]
+ALL_HOURS = BREAKFAST_HOURS + LUNCH_HOURS + DINNER_HOURS
 
-manila_zone = ActiveSupport::TimeZone["Asia/Manila"]
-
-(0..7).each do |day_offset|
-  current_date = manila_zone.now.to_date + day_offset.days
-
-  OPEN_HOURS.each do |hour|
-    start_time = manila_zone.local(current_date.year, current_date.month, current_date.day, hour, 0, 0)
-
+# Create slots for next 8 days
+8.times do |day_offset|
+  date = Date.current + day_offset.days
+  
+  ALL_HOURS.each do |hour|
+    # Store as simple datetime - no timezone conversion needed
+    slot_time = Time.zone.local(date.year, date.month, date.day, hour, 0, 0)
+    
     Table.create!(
-      start_time: start_time,
+      start_time: slot_time,
       capacity: 10,
       remaining_seats: 10
     )
   end
 end
 
-puts "Seeded: #{Table.count} time slots created"
+puts "Created #{Table.count} time slots (#{ALL_HOURS.length} hours x 8 days)"

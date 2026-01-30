@@ -1,29 +1,20 @@
 class TablesController < ApplicationController
   before_action :require_login
 
-  MANILA_TIMEZONE = "Asia/Manila".freeze
-
   def index
-    # Redirect admin to their dashboard
+    # Redirect admin to dashboard
     if current_user.admin?
-      redirect_to admin_reservations_path
+      redirect_to admin_dashboard_path
       return
     end
 
-    # Get the selected date from params, default to today in Manila time
-    manila_zone = ActiveSupport::TimeZone[MANILA_TIMEZONE]
-    today_in_manila = Time.current.in_time_zone(manila_zone).to_date
+    # Get selected date or default to today
+    @today_date = Date.current
+    @selected_date = params[:date].present? ? Date.parse(params[:date]) : @today_date
 
-    @selected_date = params[:date].present? ? Date.parse(params[:date]) : today_in_manila
-
-    # Calculate the start and end of the selected day in Manila timezone
-    start_of_day = manila_zone.local(@selected_date.year, @selected_date.month, @selected_date.day).beginning_of_day
-    end_of_day = manila_zone.local(@selected_date.year, @selected_date.month, @selected_date.day).end_of_day
-
-    # Filter tables for the selected date
-    @tables = Table.where(start_time: start_of_day..end_of_day).order(:start_time)
-
-    # Store today's date for the view (for default value)
-    @today_date = today_in_manila
+    # Get ALL tables for the selected date - simple date comparison
+    @tables = Table.where(
+      "DATE(start_time) = ?", @selected_date.to_s
+    ).order(:start_time)
   end
 end
