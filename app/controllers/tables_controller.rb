@@ -4,6 +4,12 @@ class TablesController < ApplicationController
   MANILA_TIMEZONE = "Asia/Manila".freeze
 
   def index
+    # Redirect admin to their dashboard
+    if current_user.admin?
+      redirect_to admin_reservations_path
+      return
+    end
+
     # Get the selected date from params, default to today in Manila time
     manila_zone = ActiveSupport::TimeZone[MANILA_TIMEZONE]
     today_in_manila = Time.current.in_time_zone(manila_zone).to_date

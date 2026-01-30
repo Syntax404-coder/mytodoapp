@@ -21,7 +21,7 @@ class ReservationsController < ApplicationController
   end
 
   def index
-    @reservations = current_user.reservations.includes(:table).order(created_at: :desc)
+    @reservations = current_user.reservations.joins(:table).order("tables.start_time ASC")
   end
 
   def destroy

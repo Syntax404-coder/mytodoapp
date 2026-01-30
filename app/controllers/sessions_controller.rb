@@ -6,7 +6,11 @@ class SessionsController < ApplicationController
     user = User.find_by(email: params[:email])
     if user && user.authenticate(params[:password])
       session[:user_id] = user.id
-      redirect_to root_path, notice: "Logged in successfully"
+      if user.admin?
+        redirect_to admin_reservations_path, notice: "Logged in as Admin"
+      else
+        redirect_to root_path, notice: "Logged in successfully"
+      end
     else
       flash.now[:alert] = "Invalid email or password"
       render :new, status: :unprocessable_entity

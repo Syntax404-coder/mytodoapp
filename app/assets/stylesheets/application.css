@@ -1,10 +1,96 @@
-/*
- * This is a manifest file that'll be compiled into application.css.
- *
- * With Propshaft, assets are served efficiently without preprocessing steps. You can still include
- * application-wide styles in this file, but keep in mind that CSS precedence will follow the standard
- * cascading order, meaning styles declared later in the document or manifest will override earlier ones,
- * depending on specificity.
- *
- * Consider organizing styles into separate files for maintainability.
- */
+/* Global "Netscape Era" Styles */
+body {
+  background-color: #C0C0C0; /* Windows 95 Grey */
+  font-family: "Times New Roman", Times, serif;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+/* Links */
+a {
+  color: #0000FF;
+  text-decoration: underline;
+}
+
+a:visited {
+  color: #800080;
+}
+
+/* Buttons */
+button, .btn, input[type="submit"], input[type="button"], .book-btn {
+  background-color: #FF0000;
+  color: #FFFFFF;
+  border: 3px outset #FFFFFF;
+  font-family: "Times New Roman", Times, serif;
+  font-weight: bold;
+  padding: 5px 10px;
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 14px;
+}
+
+button:active, .btn:active, input[type="submit"]:active, input[type="button"]:active, .book-btn:active {
+  border: 3px inset #FFFFFF;
+}
+
+/* Tables */
+table {
+  border-collapse: separate;
+  border: 2px solid #000000;
+  background-color: #C0C0C0;
+  width: 100%;
+}
+
+th {
+  background-color: #000080; /* Navy */
+  color: #FFFFFF;
+  font-weight: bold;
+  padding: 5px;
+  text-align: left;
+  border: 1px solid #000000;
+}
+
+td {
+  background-color: #FFFFFF;
+  padding: 5px;
+  border: 1px solid #000000;
+  color: #000000;
+}
+
+/* Forms */
+input[type="text"], input[type="password"], input[type="email"], input[type="date"], input[type="number"] {
+  border: 2px inset #FFFFFF;
+  background-color: #FFFFFF;
+  padding: 2px;
+}
+
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+/* Flash Messages */
+.flash-notice {
+  background-color: #008000; /* Green */
+  color: #FFFFFF;
+  border: 3px inset #FFFFFF;
+  padding: 10px;
+  margin: 10px;
+  font-weight: bold;
+}
+
+.flash-alert {
+  background-color: #FF0000; /* Red */
+  color: #FFFFFF;
+  border: 3px inset #FFFFFF;
+  padding: 10px;
+  margin: 10px;
+  font-weight: bold;
+}
+
+/* Layout Utilities */
+div {
+  box-sizing: border-box;
+}
