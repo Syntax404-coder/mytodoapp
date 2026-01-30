@@ -8,8 +8,12 @@ module Admin
 
     def destroy
       @reservation = Reservation.find(params[:id])
+
+      # Send cancellation email to user
+      ReservationMailer.with(reservation: @reservation).cancellation_email.deliver_now
+
       @reservation.destroy
-      redirect_to admin_dashboard_path, notice: "Reservation cancelled successfully."
+      redirect_to admin_dashboard_path, notice: "Reservation cancelled and notification sent to user."
     end
   end
 end

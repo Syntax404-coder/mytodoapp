@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content='text/html; charset=UTF-8' http-equiv='Content-Type' />
+  </head>
+  <body>
+    <h1>Reservation Cancelled</h1>
+    <p>Dear <%= @user.name %>,</p>
+    
+    <p>We are writing to inform you that your reservation for <%= @table.start_time.in_time_zone("Asia/Manila").strftime("%B %d, %Y at %I:%M %p") %> has been cancelled by our administration.</p>
+    
+    <p>We apologize for any inconvenience this may cause. We are unable to accommodate your booking at this time.</p>
+    
+    <p>We hope to serve you in the future.</p>
+    
+    <p>Sincerely,<br>
+    The Kaon Ta! Team</p>
+  </body>
+</html>
