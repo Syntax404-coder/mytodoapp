@@ -1,0 +1,21 @@
+<h1>Login</h1>
+
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>
+
+<%= form_with url: login_path, method: :post do |f| %>
+  <p>
+    <label for="email">Email:</label><br>
+    <input type="email" name="email" id="email" required>
+  </p>
+  <p>
+    <label for="password">Password:</label><br>
+    <input type="password" name="password" id="password" required>
+  </p>
+  <p>
+    <input type="submit" value="Login">
+  </p>
+<% end %>
+
+<p><a href="<%= signup_path %>">Sign up</a></p>

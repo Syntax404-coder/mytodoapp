@@ -1,9 +1,33 @@
-# This file should ensure the existence of records required to run the application in every environment (production,
-# development, test). The code here should be idempotent so that it can be executed at any point in every environment.
-# The data can then be loaded with the bin/rails db:seed command (or created alongside the database with db:setup).
-#
-# Example:
-#
-#   ["Action", "Comedy", "Drama", "Horror"].each do |genre_name|
-#     MovieGenre.find_or_create_by!(name: genre_name)
-#   end
+# Clear existing data
+Reservation.destroy_all
+Table.destroy_all
+User.destroy_all
+
+# Create admin user
+admin = User.create!(
+  name: "Admin User",
+  email: "admin@kaonta.com",
+  password: "password123",
+  role: :admin
+)
+
+# Create customer user
+customer = User.create!(
+  name: "Test Customer",
+  email: "customer@example.com",
+  password: "password123",
+  role: :customer
+)
+
+# Create time slots for the next 7 days
+(1..7).each do |day|
+  [12, 18, 20].each do |hour|
+    Table.create!(
+      start_time: day.days.from_now.change(hour: hour, min: 0),
+      capacity: 10,
+      remaining_seats: 10
+    )
+  end
+end
+
+puts "Seeded: 1 admin, 1 customer, #{Table.count} time slots"

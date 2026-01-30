@@ -1,0 +1,41 @@
+<h1>Available Time Slots</h1>
+
+<% if flash[:notice] %>
+  <p style="color: green;"><%= flash[:notice] %></p>
+<% end %>
+<% if flash[:alert] %>
+  <p style="color: red;"><%= flash[:alert] %></p>
+<% end %>
+
+<table border="1" cellpadding="8" cellspacing="0">
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Capacity</th>
+      <th>Available Seats</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tables.each do |table| %>
+      <tr style="<%= table.remaining_seats == 0 ? 'background-color: #FFCCCC;' : '' %>">
+        <td><%= table.start_time.strftime("%B %d, %Y at %I:%M %p") %></td>
+        <td><%= table.capacity %></td>
+        <td><%= table.remaining_seats %></td>
+        <td>
+          <% if table.remaining_seats > 0 %>
+            <%= form_with url: reservations_path, method: :post, local: true do %>
+              <input type="hidden" name="table_id" value="<%= table.id %>">
+              <input type="number" name="guest_count" value="1" min="1" max="<%= table.remaining_seats %>" style="width: 50px;">
+              <input type="submit" value="Book">
+            <% end %>
+          <% else %>
+            Full
+          <% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<p><a href="<%= my_reservations_path %>">My Reservations</a></p>
