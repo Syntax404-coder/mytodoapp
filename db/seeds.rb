@@ -8,8 +8,9 @@ if User.count == 0
   puts "Created default users"
 end
 
-# Clear all tables
-Table.destroy_all if Rails.env.development? || Rails.env.test?
+# Clear all tables (Ensures clean slate for the correct 12-slot schedule)
+puts "Resetting tables..."
+Table.destroy_all
 
 # Simple hours array (Manila Time, 24-hour format)
 BREAKFAST_HOURS = [ 7, 8, 9, 10 ]
